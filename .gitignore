@@ -1,0 +1,17 @@
+# Fichiers générés par Maven
+target/
+
+# Éditeurs
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Secrets locaux (ne jamais les envoyer sur GitHub)
+.env
+
+# Système
+.DS_Store
+Thumbs.db

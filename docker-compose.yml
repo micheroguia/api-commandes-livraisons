@@ -1,0 +1,33 @@
+# Lance PostgreSQL + l'API avec une seule commande : docker compose up --build
+# Les mots de passe ci-dessous servent UNIQUEMENT en local. En production, utilise des variables d'environnement.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: commandes
+      POSTGRES_USER: commandes
+      POSTGRES_PASSWORD: commandes
+    ports:
+      - "5432:5432"
+    volumes:
+      - donnees-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U commandes -d commandes"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/commandes
+      DB_USER: commandes
+      DB_PASSWORD: commandes
+    ports:
+      - "8080:8080"
+
+volumes:
+  donnees-postgres:
