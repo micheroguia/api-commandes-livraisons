@@ -2,6 +2,7 @@ package cm.romiche.commandes.livraison;
 
 import java.util.List;
 
+import cm.romiche.commandes.securite.Acteur;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +40,13 @@ public class LivraisonController {
         return service.lister(statut, pageable);
     }
 
+    @GetMapping("/miennes")
+    @Operation(summary = "Livreur : mes livraisons à faire (assignées ou en cours)")
+    public Page<LivraisonReponse> miennes(Authentication authentification,
+            @ParameterObject @PageableDefault(size = 20, sort = "majLe") Pageable pageable) {
+        return service.miennes(authentification.getName(), pageable);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Voir une livraison et l'adresse du client")
     public LivraisonReponse obtenir(@PathVariable Long id) {
@@ -51,9 +60,11 @@ public class LivraisonController {
     }
 
     @PostMapping("/{id}/statut")
-    @Operation(summary = "Faire avancer la livraison : EN_COURS, LIVREE, ECHEC ou retour à A_PLANIFIER")
-    public LivraisonReponse changerStatut(@PathVariable Long id, @Valid @RequestBody ChangementStatutRequete requete) {
-        return service.changerStatut(id, requete);
+    @Operation(summary = "Faire avancer la livraison : EN_COURS, LIVREE, ECHEC (livreur ou gérant) "
+            + "ou retour à A_PLANIFIER (gérant)")
+    public LivraisonReponse changerStatut(@PathVariable Long id, @Valid @RequestBody ChangementStatutRequete requete,
+            Authentication authentification) {
+        return service.changerStatut(id, requete, Acteur.depuis(authentification));
     }
 
     @GetMapping("/{id}/historique")

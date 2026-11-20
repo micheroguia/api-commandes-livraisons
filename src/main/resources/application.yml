@@ -26,6 +26,18 @@ spring:
       pageable:
         max-page-size: 100
 
+# Sécurité. En production, ces valeurs viennent de variables d'environnement, jamais du code.
+app:
+  jwt:
+    # Clé secrète de signature des jetons : 32 caractères minimum (variable JWT_SECRET).
+    secret: ${JWT_SECRET:}
+    # Durée de validité d'un jeton (ex. 8h, 30m).
+    duree: ${JWT_DUREE:8h}
+  comptes-initiaux:
+    # Premier compte gérant, créé au démarrage s'il n'existe encore aucun compte.
+    gerant-telephone: ${GERANT_TELEPHONE:}
+    gerant-mot-de-passe: ${GERANT_MOT_DE_PASSE:}
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

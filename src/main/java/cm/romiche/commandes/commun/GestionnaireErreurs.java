@@ -36,6 +36,20 @@ public class GestionnaireErreurs extends ResponseEntityExceptionHandler {
         return probleme;
     }
 
+    @ExceptionHandler(IdentifiantsInvalidesException.class)
+    public ProblemDetail identifiantsInvalides(IdentifiantsInvalidesException ex) {
+        ProblemDetail probleme = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        probleme.setTitle("Connexion refusée");
+        return probleme;
+    }
+
+    @ExceptionHandler(AccesRefuseException.class)
+    public ProblemDetail accesRefuse(AccesRefuseException ex) {
+        ProblemDetail probleme = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        probleme.setTitle("Accès refusé");
+        return probleme;
+    }
+
     /** Deux personnes ont modifié le même produit au même moment (verrou optimiste). */
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     public ProblemDetail conflit(ObjectOptimisticLockingFailureException ex) {

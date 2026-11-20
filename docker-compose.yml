@@ -26,6 +26,10 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/commandes
       DB_USER: commandes
       DB_PASSWORD: commandes
+      # Valeurs locales par défaut : remplace-les via un fichier .env (jamais commité).
+      JWT_SECRET: ${JWT_SECRET:-secret-local-a-changer-0123456789abcdef}
+      GERANT_TELEPHONE: ${GERANT_TELEPHONE:-690000001}
+      GERANT_MOT_DE_PASSE: ${GERANT_MOT_DE_PASSE:-motdepasse-local-a-changer}
     ports:
       - "8080:8080"
 
